@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>26键盲打训练</title>
+	<style>
+		header{
+			text-align: center;
+			height: 50px;
+			font-size: 40px;
+		}
+		#bodyArea{
+			width: 100%;
+			margin-top: 20px;
+			word-wrap:break-word;
+		}
+		#kk{
+			background: blue
+		}
+		font{
+			font-size: 30px;
+			/*width: 50px;*/
+			margin: 0 5px 0 5px;
+		}
+		#correctRate,#errorRate{
+			color: white;
+			height: 50px;
+			width: 300px;
+			text-align: center;
+			border-radius: 10px;
+			margin-left: 10px;
+			float: left;
+			line-height: 50px;
+		}
+		#correctRate{
+			background: green;
+		}
+		#errorRate{
+			background: red;
+		}
+		footer{
+			position: fixed;
+			bottom: 5px;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<header>26键盲打训练</header>
+	<div id="bodyArea"></div>
+	<footer>
+		<div id="correctRate"></div>
+		<div id="errorRate"></div>
+	</footer>
+</body>
+<script>
+	var charNum = 500;
+	//第一步：随机生成字母
+	//第二步：将随机生成的字母(作为内容)添加到font标签中
+	//第三步：将font标签插入到bodyArea标签中展示
+	var bodyArea = window.document.getElementById('bodyArea');
+	for(var i = 1; i <= charNum; i ++){
+		//生成随机数--->随机数对应的字母
+		var n = Math.floor(Math.random()*26) + 65;
+		var result = String.fromCharCode(n);
+		//创建标签
+		var fontTag = window.document.createElement('font');	
+		fontTag.setAttribute("id", "fontTag"+i);
+		fontTag.setAttribute("color", "black");
+		fontTag.style.fontFamily = "Tahoma";//Fangsong
+		fontTag.innerHTML = result;
+		//插入标签
+		bodyArea.appendChild(fontTag);
+	}
+
+	//第四步：光标定位第一个元素
+	//第五步：检测键盘输入键值
+	//			如果与光标处的字母一致，则将该字母颜色置为绿色，表示输入正确
+	//			如果与光标处的字母不一致，则将该字母颜色置为红色，表示输入错误
+	//		 光标指向下一个字母
+	var xv = 1;
+	var red_xv = 0;
+	var green_xv = 0;
+	var correctRate = window.document.getElementById('correctRate');
+	var errorRate = window.document.getElementById('errorRate');
+	var keying = window.document.getElementById('fontTag'+xv);	//从第一个开始
+	correctRate.innerHTML = '正确率：' + '0%';
+	errorRate.innerHTML = '错误率：' + '0%';
+	keying.style.color = "white";
+	keying.style.background = "blue";
+	//开始检测
+	document.onkeydown = function(event){
+			num = keying.innerHTML.charCodeAt();
+			//检测相同，修改样式：字母变为绿色，表示通过
+			if (event.keyCode == num) {
+				keying.style.color = "green";
+				keying.style.background = "none";
+				green_xv ++;	//通过数加1
+				//移动光标并修改样式
+				moveMouse();
+				//修改正确率
+				changeRate();
+			}
+			//检测不相同，修改样式：字母变为红色，表示不通过
+			else{
+				keying.style.color = "red";
+				keying.style.background = "none";
+				//移动光标并修改样式
+				red_xv ++;		//错误数加1
+				moveMouse();
+				changeRate();
+			}
+	}
+
+	//调用光标闪烁函数
+	setInterval(changeMouse,500)	;
+
+	//移动光标
+	function moveMouse(){
+		xv++;
+		keying = window.document.getElementById('fontTag'+xv);
+		keying.style.color = "white";
+		keying.style.background = "blue";
+	}
+	//修改正确/错误率
+	function changeRate(){
+		correctRate.innerHTML = '正确率：' + (green_xv / (xv - 1)) * 100 + '%';
+		errorRate.innerHTML = '错误率：' + (red_xv / (xv - 1)) * 100 + '%';
+	}
+	//光标闪烁
+	function changeMouse(){
+		if(keying.style.color == "white"){
+			keying.style.color = "black";
+			keying.style.background = "none";
+		}
+		else{
+			keying.style.color = "white";
+			keying.style.background = "blue";
+		}
+	}	
+
+</script>
+</html>
